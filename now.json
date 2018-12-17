@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "name": "survey",
+  "files": [
+    "client/build",
+    "server"
+  ],
+  "public": true
+}
