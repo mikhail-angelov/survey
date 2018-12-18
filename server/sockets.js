@@ -1,6 +1,8 @@
 module.exports = function startServer(io) {
 	io.on('connection', socket => {
-		console.log('a user connected');
+		const surveyId = socket.handshake.query.surveyId
+		console.log('a user connected', surveyId);
+		socket.join(surveyId)
 
 		socket.on('disconnect', () => {
 			console.log('user disconnected');
@@ -8,7 +10,7 @@ module.exports = function startServer(io) {
 
 		socket.on('event', msg => {
 			console.log(`message: ${msg}`);
-			io.emit('chat message', msg);
+			io.to(surveyId).emit('event', msg);
 		});
 	});
 };

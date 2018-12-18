@@ -1,0 +1,9 @@
+{
+  "survey":[{
+    "surveyId":"test",
+    "ownerId": "test",
+    "question":"test",
+    "active": true,
+    "votes":[{"id":"any", "vote":true}]
+  }]
+}
