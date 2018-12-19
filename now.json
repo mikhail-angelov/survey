@@ -5,5 +5,8 @@
     "client/build",
     "server"
   ],
+  "env": {
+    "DATABASE_URL": "@db-url"
+  },
   "public": true
 }

@@ -1,0 +1,12 @@
+.vote {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.vote-question {
+  margin-bottom: 40px;
+  font-size: 36px;
+}

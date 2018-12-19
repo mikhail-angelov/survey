@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { doRequest } from './helper'
 import Survey from './survey.model.js'
 import { getClientId } from './store'
@@ -9,6 +10,9 @@ import {
 
 export const startSurvey = (question) => async (dispatch, getStore) => {
   const ownerId = getStore().survey.clientId
+  if (!question) {
+    return dispatch({ type: SURVEY_ERROR, payload: 'Cannot create survey, the question is empty 😠' })
+  }
   try {
     const data = await doRequest({
       url: SURVEY_URL,
@@ -17,6 +21,7 @@ export const startSurvey = (question) => async (dispatch, getStore) => {
     })
     const survey = new Survey(data, ownerId)
     dispatch({ type: SURVEY_UPDATE, payload: survey })
+    window.history.pushState({}, null, survey.surveyId)
   } catch (e) {
     console.log('startSurvey error', e)
     dispatch({ type: SURVEY_ERROR, payload: 'I\'m sorry, I cannot create new survey right now 😢' })
@@ -25,6 +30,10 @@ export const startSurvey = (question) => async (dispatch, getStore) => {
 
 export const selectSurvey = (surveyId) => async (dispatch, getStore) => {
   const clientId = getStore().survey.clientId
+  const oldSurveyId = _.get(getStore(), 'survey.survey.surveyId')
+  if (!surveyId) {
+    return dispatch({ type: SURVEY_ERROR, payload: 'I cannot get this survey, the id is blank 😠' })
+  }
   try {
     const data = await doRequest({
       url: SURVEY_GET_URL(surveyId),
@@ -32,6 +41,9 @@ export const selectSurvey = (surveyId) => async (dispatch, getStore) => {
     })
     const survey = new Survey(data, clientId)
     dispatch({ type: SURVEY_UPDATE, payload: survey })
+    if (oldSurveyId !== survey.surveyId) {
+      window.history.pushState({}, null, survey.surveyId)
+    }
   } catch (e) {
     console.log('startSurvey error', e)
     dispatch({ type: SURVEY_ERROR, payload: 'I\'m sorry, I cannot get this survey 😢' })
@@ -58,14 +70,16 @@ export const vote = (vote) => async (dispatch, getStore) => {
 
 export const closeSurvey = () => async (dispatch, getStore) => {
   const ownerId = getStore().survey.clientId
-  const surveyId = getStore().survey.survey.surveyId
+  const survey = getStore().survey.survey
   try {
-    const data = await doRequest({
-      url: SURVEY_CLOSE_URL,
-      method: 'POST',
-      data: { surveyId, ownerId }
-    })
-    const survey = new Survey(data, ownerId)
+    if (survey.own) {
+      await doRequest({
+        url: SURVEY_CLOSE_URL,
+        method: 'POST',
+        data: { surveyId: survey.surveyId, ownerId }
+      })
+    }
+    window.history.pushState({}, null, '/')
     dispatch({ type: SURVEY_UPDATE, payload: survey })
   } catch (e) {
     console.log('startSurvey error', e)
@@ -73,7 +87,10 @@ export const closeSurvey = () => async (dispatch, getStore) => {
   }
 }
 
-export const clearSurvey = () => ({ type: SURVEY_CLEAR })
+export const clearSurvey = () => (dispatch) => {
+  window.history.pushState({}, null, '/')
+  return dispatch({ type: SURVEY_CLEAR })
+}
 
 export const toVoteView = () => ({ type: SURVEY_FORCE_VOTE })
 

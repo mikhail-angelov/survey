@@ -22,14 +22,15 @@ class Start extends Component {
     return (
       <div className="start">
         <div className="start-header">
+          This application let you create or join to online survey.<br />(pick one option below)
         </div>
-        <input className="start-question" value={question} onChange={this.processText('question')}></input>
-        <button className="start-new" onClick={() => startSurvey(question)}>
-          Start New Survey
+        <input className="start-input" placeholder="type survey number" value={survey} onChange={this.processText('survey')}></input>
+        <button className="srv-btn" onClick={() => selectSurvey(survey)}>
+          Join to Survey
         </button>
-        <input className="start-survey" value={survey} onChange={this.processText('survey')}></input>
-        <button className="start-open" onClick={() => selectSurvey(survey)}>
-          Open Survey
+        <textarea className="start-input" placeholder="type a question for new survey" value={question} onChange={this.processText('question')}></textarea>
+        <button className="srv-btn srv-btn-red" onClick={() => startSurvey(question)}>
+          Start new Survey
         </button>
         <div className="start-error">{error}</div>
       </div>
