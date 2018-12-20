@@ -67,7 +67,10 @@ const server = micro(
     } else {
       // redirect all un processed urls to UI
       return await handler(req, res, {
-        "public": __dirname + '/../client/build'
+        public: __dirname + '/../client/build',
+        rewrites: [
+          { source: '/**', destination: 'index.html' }
+        ]
       })
     }
   }

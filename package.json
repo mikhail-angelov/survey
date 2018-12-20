@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server/index",
     "test": "mocha server/*.spec.js --delay",
-    "deploy": "cd client; npm run build; cd ..; now rm survey -y; now"
+    "deploy": "cd client; npm run build; cd ..; now rm survey -y; now",
+    "ds": "now rm survey -y; now"
   },
   "keywords": [],
   "author": "",
